@@ -101,32 +101,39 @@ int verificar_gano_jugador(char tablero[][COLUMNA]){
 		estado_juego = verificar_gano(tablero, 'O');
 	}
 
-	/*for(int i = 1 ; i < 3 ; i++){
-		switch(i){
-			case 1:
-				estado_juego = verificar_gano(tablero, 'X');
-				break;
-			case 2:
-				estado_juego = verificar_gano(tablero, 'O');
-		}
-		if(estado_juego == TERMINO){
-			i = 3;
-		}
-	}*/
-
 	return estado_juego;
 }
 
-int main(){
+char asignar_signo(int turno){
+	char signo = '-';
+	if(turno%2 == 0){
+		signo = 'X';
+	}else{
+		signo = 'O';
+	}
+	return signo;
+}
 
+
+void mostrar_tablero(char tablero[][COLUMNA]){
+	for(int fila_actual = 0; fila_actual < FILA ; fila_actual ++ ){
+
+		for (int columna_actual = 0; columna_actual < COLUMNA; columna_actual++){
+				
+			cout<< "\t["<< tablero[fila_actual][columna_actual] << "]  ";
+
+		}
+		cout<<endl<<endl<<endl;
+	}
+}
+
+void iniciar_juego(){
 	char tablero[FILA][COLUMNA] = {};
-
+	char signo = '-';
+	int estado_juego = SIN_COMENZAR;
+	int turno = 0;
 	int fila_ingresada = -1;
 	int columna_ingresada = -1;
-	char signo = '-';
-
-	int estado_juego = SIN_COMENZAR;
-
 
 	do{
 		cout<<"Indique coordenadas\nFila: ";
@@ -135,28 +142,23 @@ int main(){
 		cin>> columna_ingresada;
 		cout<<endl;
 
-		cout<<"Ingrese el signo a ingresar"<<endl;
-		cin>>signo;
-
+		signo = asignar_signo(turno);
 		tablero[fila_ingresada][columna_ingresada] = signo;
 
-		//muestra el tablero
-		for(int fila_actual = 0; fila_actual < FILA ; fila_actual ++ ){
+		mostrar_tablero(tablero);
+		estado_juego = verificar_gano_jugador(tablero);	
 
-			for (int columna_actual = 0; columna_actual < COLUMNA; columna_actual++){
-				
-				cout<< "\t["<< tablero[fila_actual][columna_actual] << "]  ";
-
-			}
-			cout<<endl<<endl<<endl;
-		}
-
-		estado_juego = verificar_gano_jugador(tablero);		
-
+		cout<< "Turno actual: "<< turno<< " - Signo: "<<signo<<endl;
+		turno++;
 
 	}while(estado_juego != TERMINO);
+}
 
 
 
+int main(){
+
+	iniciar_juego();
+	
 	return 0;
 }
