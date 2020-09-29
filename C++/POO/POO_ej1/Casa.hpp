@@ -5,12 +5,16 @@
 
 using namespace std;
 
+const int DEF_NUM_CASA = -1;
+const string DEF_DIRECCION = "def direcc";
+const bool DEF_TIENE_PERRO = false;
+
 class Casa{
 	/*ATRIBUTOS*/
 	private:
-		int num_casa;
-		string direccion;
-		bool tiene_perro;
+		int num_casa = DEF_NUM_CASA;
+		string direccion = DEF_DIRECCION;
+		bool tiene_perro = DEF_TIENE_PERRO;
 
 	/*METODOS OBTENER - ASIGNAR*/
 	public:
