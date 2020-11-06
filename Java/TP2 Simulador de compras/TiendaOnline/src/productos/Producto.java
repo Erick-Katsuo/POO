@@ -10,16 +10,39 @@ package productos;
  * @author Katsuo
  */
 public abstract class Producto {
+    public static final int TIPO_PRODUCTO = 0;
+    public static final int NOMBRE_PRODUCTO = 1;
+    public static final int MARCA = 2;
+    public static final int PRECIO = 3;
+    public static final int PESO = 4;
+    public static final int FECHA_VENCIMIENTO = 5;
+    public static final int OFERTA = 6;
+    public static final int INFO_EXTRA = 7;
+    public static final int UNIDAD_PESO = 8;
+    
+    public static final int CANT_CARACTERISTICAS = 8;
+    
     protected String tipoProducto;
     protected String nombre;
     protected String marca;
     protected float precio;
     protected float peso;
-    protected String unidad;
     protected String fechaVencimiento;
     protected boolean tieneOferta;
-    protected int codigoProducto;
+    protected String unidad;
     
+    protected int codigoProducto;
+
+    public Producto(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String unidad) {
+        this.tipoProducto = tipoProducto;
+        this.nombre = nombre;
+        this.marca = marca;
+        this.precio = precio;
+        this.peso = peso;
+        this.fechaVencimiento = fechaVencimiento;
+        this.tieneOferta = tieneOferta;
+        this.unidad = unidad;
+    }
     
     public String getTipoProducto(){
         return tipoProducto;

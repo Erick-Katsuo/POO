@@ -10,12 +10,24 @@ package productos;
  * @author Katsuo
  */
 public class Lacteo extends Producto{
-
-    private String tipoLacteo;
     
+    public static int contadorLacteos; // es un atributo de la clase
+    
+    private String tipoLacteo;
+
+    public Lacteo(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoLacteo, String unidad) {
+        super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
+        this.tipoLacteo = tipoLacteo;
+        contadorLacteos++;
+    }
+    
+        
     @Override
     public void infoProducto() {
         System.out.println("Mostrando informacion de un producto lacteo");
+        System.out.println("Nombre del producto: " + nombre);
+        System.out.println("Tipo de lacteo: " + tipoLacteo);
+        System.out.println("Peso: " + peso + unidad);
     }
     
 }

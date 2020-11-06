@@ -11,6 +11,13 @@ package productos;
  */
 public class Limpieza extends Producto{
     private String tipoLimpieza;
+
+    public Limpieza(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoLimpieza, String unidad) {
+        super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
+        this.tipoLimpieza = tipoLimpieza;
+    }
+    
+    
     
     @Override
     public void infoProducto(){

@@ -12,7 +12,12 @@ package productos;
 public class Carne extends Producto {
     
     private String tipoCarne;
-
+    
+    public Carne(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoCarne, String unidad) {
+        super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
+        this.tipoCarne = tipoCarne;
+    }
+    
     @Override
     public void infoProducto() {
         System.out.println("Mostrando informacion de un producto de Carne");
