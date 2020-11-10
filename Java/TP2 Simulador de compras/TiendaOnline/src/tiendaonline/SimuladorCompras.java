@@ -33,11 +33,18 @@ public class SimuladorCompras {
         miSuper = new SuperMercado();
     }
     
+    public void iniciarSimulacion(){
+        leerArchivo();// carga los productos en el super mercado
+        
+        mostrarInfoProductos();
+    }
+    
     /**
     * Muestra todos los productos disponbiles en miSuper
     */
-    public void mostrarProductos(){
+    public void mostrarInfoProductos(){
         miSuper.mostrarProductosLacteo();
+        miSuper.mostrarProductosCarne();
     }
     
     
@@ -49,11 +56,14 @@ public class SimuladorCompras {
      * 
      * @param contadorCaracteristicas contiene el numero actual de caracteristicas leidas
      * @param infoProducto contiene la informacion actual obtenida del producto
+     * 
+     * @return el valor correspondiente del contaddor de caracteristicas
      */
     private int controlarLectura(int contadorCaracteristicas, String[] infoProducto) {
         if (contadorCaracteristicas == Producto.CANT_CARACTERISTICAS) {
             miSuper.agregarProducto(infoProducto);
             contadorCaracteristicas = 0; // reinicio el contador de productos para comenzar a guardar la informacion del siguiente
+            System.out.println("--------------------------------------------------");
         } else {
             contadorCaracteristicas++; // ASIGNARLE UN NUEVO VALOR AL CONTADOR PARA QUE PASE AL SIGUIENT ELEMENTO DEL VECTOR
         }
@@ -119,7 +129,7 @@ public class SimuladorCompras {
         String info = "def caracteristica";
         int contadorCaracteristicas = 0;// posicion inicial de caracteristicas
         while (infoArchivo.hasNextLine()) { // verifica que el archivo no este vacio
-            info = infoArchivo.next();// agarra la primer linea y lo guarda en "informacion"
+            info = infoArchivo.next();// agarra la primer caracteristica y lo guarda en "informacion"
             prepararProducto(info, infoProducto, contadorCaracteristicas);//mostrar y guardar las caracteristicas leidas
             contadorCaracteristicas = controlarLectura(contadorCaracteristicas, infoProducto);
         }

@@ -28,6 +28,10 @@ public class Lacteo extends Producto{
         System.out.println("Nombre del producto: " + nombre);
         System.out.println("Tipo de lacteo: " + tipoLacteo);
         System.out.println("Peso: " + peso + unidad);
+        System.out.println("Tiene oferta: " + tieneOferta);
+        System.out.println("Marca: " + marca);
+        System.out.println("Precio: " + precio + "$");
+        System.out.println("Fecha de vencimiento: " + fechaVencimiento);
     }
     
 }

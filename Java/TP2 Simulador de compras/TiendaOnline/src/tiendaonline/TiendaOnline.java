@@ -16,10 +16,7 @@ public class TiendaOnline {
      */
     public static void main(String[] args) {
         SimuladorCompras miSimulador = new SimuladorCompras();
-        
-        miSimulador.leerArchivo();
-        miSimulador.mostrarProductos();
-        
+        miSimulador.iniciarSimulacion();        
     }
     
 }
