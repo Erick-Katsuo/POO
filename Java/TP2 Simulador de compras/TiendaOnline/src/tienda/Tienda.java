@@ -10,8 +10,13 @@ package tienda;
  * @author Katsuo
  */
 public abstract class Tienda {
-    private String nombre;
-    private boolean oferta;
+    protected String nombre;
+    protected boolean estaOferta;
+    
+    public Tienda(String nombre, boolean estaOferta){
+        this.nombre = nombre;
+        this.estaOferta = estaOferta;
+    }
     
     /**
      * Agrega un producto con toda su informacion.

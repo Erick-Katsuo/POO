@@ -15,6 +15,8 @@ public class SuperMercado extends Tienda implements Caja{
 
     private static final int MAX_LACTEOS = 10;
     private static final int MAX_CARNES = 10;
+    private static final int MAX_ENLATADO = 10;
+    private static final int MAX_LIMPIEZA = 10;
     
     private static final String PROD_LACTEO = "Lacteo";
     private static final String PROD_CARNE = "Carne";
@@ -26,11 +28,34 @@ public class SuperMercado extends Tienda implements Caja{
     private Enlatado[] productosEnlatado;
     private Limpieza[] productosLimpieza;
     
+      
     
-    public SuperMercado(){
+    public SuperMercado(String nombre, boolean estaOferta){// se crea una instancia de la clase SuperMercado
+        super(nombre, estaOferta);// se crea una instancia de la clase TIenda
         productosLacteo = new Lacteo[MAX_LACTEOS];
         productosCarne = new Carne[MAX_CARNES];
+        productosEnlatado = new Enlatado[MAX_ENLATADO];
+        productosLimpieza = new Limpieza[MAX_LIMPIEZA];
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public boolean isEstaOferta() {
+        return estaOferta;
+    }
+
+    public void setEstaOferta(boolean estaOferta) {
+        this.estaOferta = estaOferta;
+    }
+    
+    
+    
     
     @Override
     public void atenderCliente(Chango changoCliente) {
@@ -74,8 +99,42 @@ public class SuperMercado extends Tienda implements Caja{
      * @param oferta del producto
      */
     private void agregarProductoCarne(String[] infoRestanteProducto, float precio, float peso, boolean oferta){
-        System.out.println("Antes de agregar un producto lacteo el valor de contadorLacteos es:" + Lacteo.contadorLacteos);
+        System.out.println("Antes de agregar un producto Carne el valor de contadorLacteos es:" + Lacteo.contadorLacteos);
         productosCarne[Carne.contadorCarne] = new Carne(infoRestanteProducto[Producto.TIPO_PRODUCTO],
+                infoRestanteProducto[Producto.NOMBRE_PRODUCTO], infoRestanteProducto[Producto.MARCA],
+                precio, peso, infoRestanteProducto[Producto.FECHA_VENCIMIENTO], oferta,
+                infoRestanteProducto[Producto.INFO_EXTRA], infoRestanteProducto[Producto.UNIDAD_PESO]);  
+    }
+    
+    /**
+     * Agrega un producto Enlatado.
+     * Agrega un producto Enlatado al vector productosCarne
+     * 
+     * @param infoRestanteProducto contiene informacion restante del producto
+     * @param precio del producto
+     * @param peso del producto
+     * @param oferta del producto
+     */
+    private void agregarProductoEnlatado(String[] infoRestanteProducto, float precio, float peso, boolean oferta){
+        System.out.println("Antes de agregar un producto Enlatado el valor de contadorLacteos es:" + Lacteo.contadorLacteos);
+        productosEnlatado[Enlatado.contadorEnlatado] = new Enlatado(infoRestanteProducto[Producto.TIPO_PRODUCTO],
+                infoRestanteProducto[Producto.NOMBRE_PRODUCTO], infoRestanteProducto[Producto.MARCA],
+                precio, peso, infoRestanteProducto[Producto.FECHA_VENCIMIENTO], oferta,
+                infoRestanteProducto[Producto.INFO_EXTRA], infoRestanteProducto[Producto.UNIDAD_PESO]);  
+    }
+    
+    /**
+     * Agrega un producto Enlatado.
+     * Agrega un producto Enlatado al vector productosCarne
+     * 
+     * @param infoRestanteProducto contiene informacion restante del producto
+     * @param precio del producto
+     * @param peso del producto
+     * @param oferta del producto
+     */
+    private void agregarProductoLimpieza(String[] infoRestanteProducto, float precio, float peso, boolean oferta){
+        System.out.println("Antes de agregar un producto Limpieza el valor de contadorLacteos es:" + Lacteo.contadorLacteos);
+        productosLimpieza[Limpieza.contadorLimpieza] = new Limpieza(infoRestanteProducto[Producto.TIPO_PRODUCTO],
                 infoRestanteProducto[Producto.NOMBRE_PRODUCTO], infoRestanteProducto[Producto.MARCA],
                 precio, peso, infoRestanteProducto[Producto.FECHA_VENCIMIENTO], oferta,
                 infoRestanteProducto[Producto.INFO_EXTRA], infoRestanteProducto[Producto.UNIDAD_PESO]);  
@@ -83,7 +142,7 @@ public class SuperMercado extends Tienda implements Caja{
     
     public void mostrarProductosLacteo(){
         System.out.println("-------------------------------------------");
-        System.out.println("\tMostrando productos lacteos disponibles");
+        System.out.println("\tMostrando productos [lacteos] disponibles en el supermercado");
         for(int i = 0 ; i < Lacteo.contadorLacteos ; i++){            
             System.out.println("\t\t***********");
             productosLacteo[i].infoProducto();
@@ -92,10 +151,28 @@ public class SuperMercado extends Tienda implements Caja{
     
     public void mostrarProductosCarne(){
         System.out.println("-------------------------------------------");
-        System.out.println("\tMostrando productos Carne disponibles");
+        System.out.println("\tMostrando productos [Carne] disponibles en el supermercado");
         for(int i = 0 ; i < Carne.contadorCarne ; i++){            
             System.out.println("\t\t***********");
             productosCarne[i].infoProducto();
+        }
+    }
+    
+    public void mostrarProductosEnlatado(){
+        System.out.println("-------------------------------------------");
+        System.out.println("\tMostrando productos [Enlatado] disponibles en el supermercado");
+        for(int i = 0 ; i < Enlatado.contadorEnlatado ; i++){            
+            System.out.println("\t\t***********");
+            productosEnlatado[i].infoProducto();
+        }
+    }
+    
+    public void mostrarProductosLimpieza(){
+        System.out.println("-------------------------------------------");
+        System.out.println("\tMostrando productos [Limpieza] disponibles en el supermercado");
+        for(int i = 0 ; i < Limpieza.contadorLimpieza ; i++){            
+            System.out.println("\t\t***********");
+            productosLimpieza[i].infoProducto();
         }
     }
     
@@ -115,14 +192,12 @@ public class SuperMercado extends Tienda implements Caja{
                 System.out.println("Agregando producto Carne");
                 break;
             case PROD_ENLATADO:
-                //cargar un producto Enlatado al super mercado
+                agregarProductoEnlatado(infoProducto, precioProducto, pesoProducto, ofertaProducto);
                 System.out.println("Agregando producto Enlatado");
                 break;
             case PROD_LIMPIEZA:
-                //cargar un producto Limpieza al super mercado
-                System.out.println("Agregando producto Limpieza");
-                break;
-                
+                agregarProductoLimpieza(infoProducto, precioProducto, pesoProducto, ofertaProducto);
+                System.out.println("Agregando producto Limpieza");                
         }
     }
     

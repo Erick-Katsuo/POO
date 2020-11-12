@@ -23,40 +23,85 @@ import tienda.SuperMercado;
  */
 public class SimuladorCompras {
 
+    private static final int OPC_DEF = -1;
+    
+    private static final int OPC_MOSTRAR_PROD = 1;
+    
+    private static final int OPC_SALIR = 0;
+
     private static final String ARCHIVO_PRODUCTOS = "productos.txt";
     private static final String RUTA_ARCHIVO_PRODUCTOS = "C:/Users/Katsuo/Documents/Temas nuevos CFP27/Java/nuevo/";
-    
+
     private SuperMercado miSuper;
     private Chango miChango;
-    
-    public SimuladorCompras(){
-        miSuper = new SuperMercado();
+
+    public SimuladorCompras() {
+        miSuper = new SuperMercado("Super CFP27", false); // miSuper = referencia de memoria dinamica obtenida mediante new
     }
-    
-    public void iniciarSimulacion(){
-        leerArchivo();// carga los productos en el super mercado
-        
-        mostrarInfoProductos();
-    }
-    
+
     /**
-    * Muestra todos los productos disponbiles en miSuper
-    */
-    public void mostrarInfoProductos(){
+     * Muestra el menu de la simulacion de compras. Muestra las distintas
+     * opciones para el cliente
+     */
+    private void mostrarMenu() {
+        System.out.println("\t\t***Menu***");
+        System.out.println("\t• Ver productos del supermercado " + miSuper.getNombre() + " [1]");
+        System.out.println("\t\t***Menu***");
+        System.out.println("\t\t***Menu***");
+        System.out.println("\t• Salir [0]");
+    }
+
+    /**
+     * Ejecuta la opcion recibida.
+     * Si la opcion es invalida lo informa
+     * 
+     * @param opcUsuario contiene el valor de la opcion elegida por el usuario
+     */
+    private void ejecutarOpcion(int opcUsuario) {
+        switch (opcUsuario) {
+            case OPC_MOSTRAR_PROD:
+                mostrarInfoProductos();
+                break;
+            case OPC_SALIR:
+                System.out.println("Saliendo del supermercado dejando la compra");
+                break;
+            default:
+                System.out.println("Ingreso no valido");
+        }
+    }
+
+    public void iniciarSimulacion() {
+        leerArchivo();// carga los productos en el super mercado
+        Scanner opcIngresada = new Scanner(System.in);
+        int opcUsuario = OPC_DEF;
+        do {
+            mostrarMenu();
+            opcUsuario = opcIngresada.nextInt();
+            ejecutarOpcion(opcUsuario);
+
+        } while (opcUsuario != 0);
+
+    }
+
+    /**
+     * Muestra todos los productos disponbiles en miSuper
+     */
+    public void mostrarInfoProductos() {
         miSuper.mostrarProductosLacteo();
         miSuper.mostrarProductosCarne();
+        miSuper.mostrarProductosEnlatado();
+        miSuper.mostrarProductosLimpieza();
     }
-    
-    
-    
-    
+
     /**
-     * Controla la lectura de caracteristicas de los productos.
-     * Dependiento de la cantidad de caracteristicas se sigue tomando más o se prepara para cargar el producto.
-     * 
-     * @param contadorCaracteristicas contiene el numero actual de caracteristicas leidas
+     * Controla la lectura de caracteristicas de los productos. Dependiento de
+     * la cantidad de caracteristicas se sigue tomando más o se prepara para
+     * cargar el producto.
+     *
+     * @param contadorCaracteristicas contiene el numero actual de
+     * caracteristicas leidas
      * @param infoProducto contiene la informacion actual obtenida del producto
-     * 
+     *
      * @return el valor correspondiente del contaddor de caracteristicas
      */
     private int controlarLectura(int contadorCaracteristicas, String[] infoProducto) {
@@ -69,17 +114,19 @@ public class SimuladorCompras {
         }
         return contadorCaracteristicas;
     }
-    
+
     /**
-     * Muestra la informacion guardada de un producto.
-     * Muestra las caracteristicas del producto a guardar
-     * 
+     * Muestra la informacion guardada de un producto. Muestra las
+     * caracteristicas del producto a guardar
+     *
      * @param info contiene la caracteristica actual correspondiente
-     * @param infoProducto contenedor de todas las caracteristicas del producto actual
-     * @param contadorCaracteristicas contiene el valor numero de la caracteristica correspondiente
+     * @param infoProducto contenedor de todas las caracteristicas del producto
+     * actual
+     * @param contadorCaracteristicas contiene el valor numero de la
+     * caracteristica correspondiente
      */
-    private void prepararProducto(String info, String[] infoProducto, int contadorCaracteristicas){
-        switch(contadorCaracteristicas){
+    private void prepararProducto(String info, String[] infoProducto, int contadorCaracteristicas) {
+        switch (contadorCaracteristicas) {
             case Producto.TIPO_PRODUCTO:
                 System.out.println("Tipo de producto: " + info);
                 infoProducto[Producto.TIPO_PRODUCTO] = info;
@@ -121,7 +168,7 @@ public class SimuladorCompras {
 
     /**
      * Comienza a leer el archivo y separar la informacion.
-     * 
+     *
      * @param infoArchivo contiene toda la informacion del archivo leido
      */
     private void separarInformacion(Scanner infoArchivo) {
@@ -136,8 +183,7 @@ public class SimuladorCompras {
     }
 
     /**
-     * Prepara la lectura del archivo. 
-     * Lee el archivo "productos"
+     * Prepara la lectura del archivo. Lee el archivo "productos"
      */
     public void leerArchivo() {
         FileReader archivoProductos;
@@ -148,7 +194,7 @@ public class SimuladorCompras {
             separarInformacion(archivoScan);
             System.out.println("Termino de leer el archivo");
             archivoProductos.close();
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("No encontro el archivo \n" + ex);
         }
     }
