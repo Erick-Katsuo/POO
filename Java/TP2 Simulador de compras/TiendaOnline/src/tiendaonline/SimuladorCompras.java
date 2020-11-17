@@ -24,10 +24,12 @@ import tienda.SuperMercado;
 public class SimuladorCompras {
 
     private static final int OPC_DEF = -1;
-    
+
     private static final int OPC_MOSTRAR_PROD = 1;
-    
+
     private static final int OPC_SALIR = 0;
+    
+    private static final int OPC_PROD_SALIR = 0;
 
     private static final String ARCHIVO_PRODUCTOS = "productos.txt";
     private static final String RUTA_ARCHIVO_PRODUCTOS = "C:/Users/Katsuo/Documents/Temas nuevos CFP27/Java/nuevo/";
@@ -44,7 +46,7 @@ public class SimuladorCompras {
      * opciones para el cliente
      */
     private void mostrarMenu() {
-        System.out.println("\t\t***Menu***");
+        System.out.println("\t\t***Menu simulacion***");
         System.out.println("\t• Ver productos del supermercado " + miSuper.getNombre() + " [1]");
         System.out.println("\t\t***Menu***");
         System.out.println("\t\t***Menu***");
@@ -52,9 +54,8 @@ public class SimuladorCompras {
     }
 
     /**
-     * Ejecuta la opcion recibida.
-     * Si la opcion es invalida lo informa
-     * 
+     * Ejecuta la opcion recibida. Si la opcion es invalida lo informa
+     *
      * @param opcUsuario contiene el valor de la opcion elegida por el usuario
      */
     private void ejecutarOpcion(int opcUsuario) {
@@ -83,14 +84,66 @@ public class SimuladorCompras {
 
     }
 
-    /**
-     * Muestra todos los productos disponbiles en miSuper
-     */
-    public void mostrarInfoProductos() {
+    
+    
+    private void mostrarProductos(){
+        System.out.println("\tMenu productos");
+        System.out.println("\topcion ver todos los productos [1]");
+        System.out.println("\topcion ver lacteos [2]");
+        System.out.println("\topcion ver carne [3]");
+        System.out.println("\topcion ver enlatado [4]");
+        System.out.println("\topcion ver limpieza [5]");
+        System.out.println("\tVolver al menu de simulacion [0]");
+    }
+    
+    private void mostrarTodosProductos(){
         miSuper.mostrarProductosLacteo();
         miSuper.mostrarProductosCarne();
         miSuper.mostrarProductosEnlatado();
         miSuper.mostrarProductosLimpieza();
+    }
+    
+    private void ejecutarOpcionProductos(int opcProductoRecib){
+        switch (opcProductoRecib) {
+            case 1:
+                System.out.println("viendo todos los productos en el super");
+                mostrarTodosProductos();
+                break;
+            case 2:
+                System.out.println("viendo todos los productos lacteos");
+                miSuper.mostrarProductosLacteo();
+                break;
+            case 3:
+                System.out.println("viendo todos los productos carne");
+                miSuper.mostrarProductosCarne();
+                break;
+            case 4:
+                System.out.println("viendo todos los productos enlatado");
+                miSuper.mostrarProductosEnlatado();
+                break;
+            case 5:
+                System.out.println("viendo todos los productos limpieza");
+                miSuper.mostrarProductosLimpieza();
+                break;
+            case 0:
+                System.out.println("Saliendo del menu de productos");
+                break;
+            default:
+                System.out.println("Ingreso no valido");
+        }
+    }
+    
+    /**
+     * Muestra todos los productos disponbiles en miSuper
+     */
+    public void mostrarInfoProductos() {
+        int opcProductoRecib = OPC_PROD_SALIR;
+        do{
+            mostrarProductos();
+            Scanner opcProductos = new Scanner(System.in);
+            opcProductoRecib = opcProductos.nextInt();
+            ejecutarOpcionProductos(opcProductoRecib);
+        }while(opcProductoRecib != OPC_PROD_SALIR);
     }
 
     /**

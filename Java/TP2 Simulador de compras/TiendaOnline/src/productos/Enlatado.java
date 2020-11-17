@@ -23,7 +23,7 @@ public class Enlatado extends Producto{
     
     @Override
     public void infoProducto() {
-        System.out.println("Mostrando informacion de un producto lacteo");
+        System.out.println("Mostrando informacion de un producto enlatado");
         System.out.println("Nombre del producto: " + nombre);
         System.out.println("Tipo de Enlatado: " + tipoEnlatado);
         System.out.println("Peso: " + peso + unidad);
