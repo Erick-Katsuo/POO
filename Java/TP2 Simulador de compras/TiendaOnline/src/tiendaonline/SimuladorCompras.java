@@ -26,6 +26,12 @@ public class SimuladorCompras {
     private static final int OPC_DEF = -1;
 
     private static final int OPC_MOSTRAR_PROD = 1;
+    private static final int OPC_AGREGAR_PRODC_LACTEO = 2;
+    private static final int OPC_AGREGAR_PRODC_CARNE = 3;
+    private static final int OPC_AGREGAR_PRODC_ENLAT = 4;
+    private static final int OPC_AGREGAR_PRODC_LIMPIEZA = 5;
+    
+    private static final int OPC_COMENZAR_COMPRA= 1;
 
     private static final int OPC_SALIR = 0;
     
@@ -39,16 +45,48 @@ public class SimuladorCompras {
 
     public SimuladorCompras() {
         miSuper = new SuperMercado("Super CFP27", false); // miSuper = referencia de memoria dinamica obtenida mediante new
+        miChango = new Chango();
     }
-
+    
+    private void menuChango(){
+        System.out.println("\t\t***Menu chango***");
+        System.out.println("\t• Ver productos del supermercado " + miSuper.getNombre() + " ["+ OPC_MOSTRAR_PROD+"]");
+        System.out.println("\t• Agregar producto lacteo [2]");
+        System.out.println("\t• Agregar producto carne [3]");
+        System.out.println("\t• Agregar producto enlatado [4]");
+        System.out.println("\t• Agregar producto limpieza [5]");
+        System.out.println("\t• Salir ["+OPC_SALIR+"]");
+        
+    }
+    
+    private void ejecutarOpcChango(int opcChango){
+        switch(opcChango){
+            case OPC_MOSTRAR_PROD:
+                mostrarInfoProductos();
+                break;
+            case OPC_AGREGAR_PRODC_LACTEO:
+                miSuper.comprarProductoLacteo(miChango);
+                break;
+        }
+    }
+    
+    private void comprar(){
+        Scanner opcChango = new Scanner(System.in);
+        int opChangoRecib = OPC_DEF;
+        do{
+            menuChango();
+            opChangoRecib = opcChango.nextInt();
+            ejecutarOpcChango(opChangoRecib);
+        }while(opChangoRecib != OPC_SALIR);
+    }
+    
     /**
      * Muestra el menu de la simulacion de compras. Muestra las distintas
      * opciones para el cliente
      */
     private void mostrarMenu() {
         System.out.println("\t\t***Menu simulacion***");
-        System.out.println("\t• Ver productos del supermercado " + miSuper.getNombre() + " [1]");
-        System.out.println("\t\t***Menu***");
+        System.out.println("\t• Comenzar compras ["+OPC_COMENZAR_COMPRA+"]");
         System.out.println("\t\t***Menu***");
         System.out.println("\t• Salir [0]");
     }
@@ -60,8 +98,8 @@ public class SimuladorCompras {
      */
     private void ejecutarOpcion(int opcUsuario) {
         switch (opcUsuario) {
-            case OPC_MOSTRAR_PROD:
-                mostrarInfoProductos();
+            case OPC_COMENZAR_COMPRA:
+                comprar();
                 break;
             case OPC_SALIR:
                 System.out.println("Saliendo del supermercado dejando la compra");
@@ -87,13 +125,13 @@ public class SimuladorCompras {
     
     
     private void mostrarProductos(){
-        System.out.println("\tMenu productos");
-        System.out.println("\topcion ver todos los productos [1]");
-        System.out.println("\topcion ver lacteos [2]");
-        System.out.println("\topcion ver carne [3]");
-        System.out.println("\topcion ver enlatado [4]");
-        System.out.println("\topcion ver limpieza [5]");
-        System.out.println("\tVolver al menu de simulacion [0]");
+        System.out.println("\t\t***Menu productos***");
+        System.out.println("\t• opcion ver todos los productos [1]");
+        System.out.println("\t• opcion ver lacteos [2]");
+        System.out.println("\t• opcion ver carne [3]");
+        System.out.println("\t• opcion ver enlatado [4]");
+        System.out.println("\t• opcion ver limpieza [5]");
+        System.out.println("\t• Volver al menu de chango [0]");
     }
     
     private void mostrarTodosProductos(){

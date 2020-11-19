@@ -25,7 +25,7 @@ public class Lacteo extends Producto{
     @Override
     public void infoProducto() {
         System.out.println("Mostrando informacion de un producto lacteo");
-        System.out.println("Nombre del producto: " + nombre);
+        System.out.println("Nombre del producto: " + nombre + " #"+codigoProducto);
         System.out.println("Tipo de lacteo: " + tipoLacteo);
         System.out.println("Peso: " + peso + unidad);
         System.out.println("Tiene oferta: " + tieneOferta);

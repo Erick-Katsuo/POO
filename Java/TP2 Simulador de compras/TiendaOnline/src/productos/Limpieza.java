@@ -26,7 +26,7 @@ public class Limpieza extends Producto{
     @Override
     public void infoProducto(){
         System.out.println("Mostrando informacion de un producto limpieza");
-        System.out.println("Nombre del producto: " + nombre);
+        System.out.println("Nombre del producto: " + nombre + " #"+codigoProducto);
         System.out.println("Tipo de Limpieza: " + tipoLimpieza);
         System.out.println("Peso: " + peso + unidad);
         System.out.println("Tiene oferta: " + tieneOferta);

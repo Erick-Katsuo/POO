@@ -5,6 +5,7 @@
  */
 package tienda;
 
+import java.util.Scanner;
 import productos.*;
 
 /**
@@ -55,6 +56,20 @@ public class SuperMercado extends Tienda implements Caja{
     }
     
     
+    
+        
+    public void agregarProductoLacteoChango(Chango changoCliente, int opcProducto){
+        
+        changoCliente.agregarProducto( productosLacteo[opcProducto] );
+        System.out.println("Producto lacteo de codigo: " + opcProducto +" fue agregado ");
+    }
+    
+    public void comprarProductoLacteo(Chango changoCliente){
+        mostrarProductosLacteo();
+        Scanner opcCompraLacteo = new Scanner(System.in);
+        int opcCompraLacteoRecib = opcCompraLacteo.nextInt();
+        agregarProductoLacteoChango(changoCliente, opcCompraLacteoRecib);
+    }
     
     
     @Override

@@ -32,7 +32,8 @@ public abstract class Producto {
     protected String unidad;
     
     protected int codigoProducto;
-
+    protected static int cantProductos;
+    
     public Producto(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String unidad) {
         this.tipoProducto = tipoProducto;
         this.nombre = nombre;
@@ -42,6 +43,9 @@ public abstract class Producto {
         this.fechaVencimiento = fechaVencimiento;
         this.tieneOferta = tieneOferta;
         this.unidad = unidad;
+        
+        cantProductos++;
+        codigoProducto = cantProductos;
     }
     
     public String getTipoProducto(){
