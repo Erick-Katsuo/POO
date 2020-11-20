@@ -13,11 +13,14 @@ public class Enlatado extends Producto{
     
     public static int contadorEnlatado;
     
+    public static final int MOD_CODIGO_ENLATADO = 24;
+    
     private String tipoEnlatado;
     
     public Enlatado(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoEnlatado, String unidad) {
         super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
         this.tipoEnlatado = tipoEnlatado;
+        codigoProducto = contadorEnlatado + MOD_CODIGO_ENLATADO;
         contadorEnlatado++;
     }
     

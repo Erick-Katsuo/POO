@@ -21,6 +21,14 @@ public class Chango {
         carritoCompras = new Producto[MAX_COMPRAS];
     }
     
+    public Producto[] getCarritoCompras(){
+        return carritoCompras;
+    }
+    
+    public int getCantCompras(){
+        return cantCompras;
+    }
+    
     /**
      * Agrega un producto al carritoCompras.
      * Accede al vector carritoCompras guardando el productoComprado

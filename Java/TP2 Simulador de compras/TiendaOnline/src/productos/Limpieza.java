@@ -13,11 +13,14 @@ public class Limpieza extends Producto{
     
     public static int contadorLimpieza;
     
+    public static final int MOD_CODIGO_LIMPIEZA  = 5768;
+    
     private String tipoLimpieza;
 
     public Limpieza(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoLimpieza, String unidad) {
         super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
         this.tipoLimpieza = tipoLimpieza;
+        codigoProducto = contadorLimpieza + MOD_CODIGO_LIMPIEZA;
         contadorLimpieza++;
     }
     

@@ -24,6 +24,8 @@ public class SuperMercado extends Tienda implements Caja{
     private static final String PROD_ENLATADO = "Enlatado";
     private static final String PROD_LIMPIEZA = "Limpieza";
     
+    private static final int PAGO_UNA_CUOTA = 1;
+    
     private Lacteo[] productosLacteo;
     private Carne[] productosCarne;
     private Enlatado[] productosEnlatado;
@@ -59,27 +61,66 @@ public class SuperMercado extends Tienda implements Caja{
     
         
     public void agregarProductoLacteoChango(Chango changoCliente, int opcProducto){
-        
-        changoCliente.agregarProducto( productosLacteo[opcProducto] );
-        System.out.println("Producto lacteo de codigo: " + opcProducto +" fue agregado ");
+        changoCliente.agregarProducto( productosLacteo[opcProducto - Lacteo.MOD_CODIGO_LACTEO] );
     }
     
-    public void comprarProductoLacteo(Chango changoCliente){
-        mostrarProductosLacteo();
-        Scanner opcCompraLacteo = new Scanner(System.in);
-        int opcCompraLacteoRecib = opcCompraLacteo.nextInt();
-        agregarProductoLacteoChango(changoCliente, opcCompraLacteoRecib);
+    public void agregarProductoCarneChango(Chango changoCliente, int opcProducto){
+        changoCliente.agregarProducto( productosCarne[opcProducto - Carne.MOD_CODIGO_CARNE] );
     }
     
+    public void agregarProductoEnlatadoChango(Chango changoCliente, int opcProducto){
+        changoCliente.agregarProducto( productosEnlatado[opcProducto - Enlatado.MOD_CODIGO_ENLATADO] );
+    }
+    
+    public void agregarProductoLimpiezaChango(Chango changoCliente, int opcProducto){
+        changoCliente.agregarProducto( productosLimpieza[opcProducto - Limpieza.MOD_CODIGO_LIMPIEZA] );
+    }
+    
+    
+    private void menuCaja(){              
+        System.out.println("\t***Pasando por caja!");
+        System.out.println("\t***Menu caja***");
+        System.out.println("• Opc pagar 1 cuota [1]");
+        System.out.println("• Opc pagar en cuotas [2]");
+    }
+    
+    private void ejecutarOpcCaja(int opcRecbPago, Chango changoCliente){
+        Scanner opcCuotas = new Scanner(System.in);
+        int cuotas = PAGO_UNA_CUOTA;
+        switch(opcRecbPago){
+            case 1:
+                System.out.println("Calculando pago en 1 cuota");
+                calcularCostoFinal(changoCliente, cuotas);
+                break;
+            case 2:
+                System.out.println("Calculando pago en cuotas");
+                System.out.println("Ingrese cantidad de cuotas");
+                cuotas = opcCuotas.nextInt();
+                calcularCostoFinal(changoCliente, cuotas);
+                break;
+            default:
+                System.out.println("Ingreso no aceptado");
+        }
+    }
     
     @Override
-    public void atenderCliente(Chango changoCliente) {
-
+    public void atenderCliente(Chango changoCliente) {        
+        Scanner opcPago = new Scanner(System.in);
+        int opcRecibPago;
+        do{
+            menuCaja();
+            opcRecibPago = opcPago.nextInt();
+            ejecutarOpcCaja(opcRecibPago, changoCliente);        
+        }while((opcRecibPago != 1) && (opcRecibPago !=2));
     }
 
     @Override
     public void calcularCostoFinal(Chango changoCliente, int cantidadCuotas) {
-        
+        float costoFinal = 0;
+        for(int i = 0 ; i < changoCliente.getCantCompras() ; i++){
+            costoFinal += changoCliente.getCarritoCompras()[i].getPrecio();
+        }
+        System.out.println("costo final: " + costoFinal/cantidadCuotas);
     }
 
     @Override

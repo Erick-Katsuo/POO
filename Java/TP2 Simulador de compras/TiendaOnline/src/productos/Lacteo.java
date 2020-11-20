@@ -13,11 +13,14 @@ public class Lacteo extends Producto{
     
     public static int contadorLacteos; // es un atributo de la clase
     
+    public static final int MOD_CODIGO_LACTEO = 231312334;
+    
     private String tipoLacteo;
 
     public Lacteo(String tipoProducto, String nombre, String marca, float precio, float peso, String fechaVencimiento, boolean tieneOferta, String tipoLacteo, String unidad) {
         super(tipoProducto, nombre, marca, precio, peso, fechaVencimiento, tieneOferta, unidad);
         this.tipoLacteo = tipoLacteo;
+        codigoProducto = contadorLacteos + MOD_CODIGO_LACTEO;
         contadorLacteos++;
     }
     

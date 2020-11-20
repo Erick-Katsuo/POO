@@ -5,12 +5,9 @@
  */
 package tiendaonline;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import productos.Producto;
 import tienda.Chango;
 import tienda.SuperMercado;
@@ -24,12 +21,15 @@ import tienda.SuperMercado;
 public class SimuladorCompras {
 
     private static final int OPC_DEF = -1;
+    private static final int OPC_PRODUCT_CODIGO_DEF = -1;
 
     private static final int OPC_MOSTRAR_PROD = 1;
     private static final int OPC_AGREGAR_PRODC_LACTEO = 2;
     private static final int OPC_AGREGAR_PRODC_CARNE = 3;
     private static final int OPC_AGREGAR_PRODC_ENLAT = 4;
     private static final int OPC_AGREGAR_PRODC_LIMPIEZA = 5;
+    private static final int MOSTRAR_PRODUC_CHANGO = 6;
+    private static final int OPC_CAJA = 7;
     
     private static final int OPC_COMENZAR_COMPRA= 1;
 
@@ -55,18 +55,53 @@ public class SimuladorCompras {
         System.out.println("\t• Agregar producto carne [3]");
         System.out.println("\t• Agregar producto enlatado [4]");
         System.out.println("\t• Agregar producto limpieza [5]");
+        System.out.println("\t• Ver productos del chango [6]");
+        System.out.println("\t• Pasar por caja [7]");
         System.out.println("\t• Salir ["+OPC_SALIR+"]");
         
     }
     
     private void ejecutarOpcChango(int opcChango){
+        
+        Scanner opcProductoCodigo = new Scanner(System.in);
+        int opcCodigoProductRecib = OPC_PRODUCT_CODIGO_DEF;
+        
         switch(opcChango){
             case OPC_MOSTRAR_PROD:
                 mostrarInfoProductos();
                 break;
             case OPC_AGREGAR_PRODC_LACTEO:
-                miSuper.comprarProductoLacteo(miChango);
+                miSuper.mostrarProductosLacteo(); 
+                System.out.println("\n\t***Ingrese el codigo del producto que desea agregar");
+                opcCodigoProductRecib = opcProductoCodigo.nextInt();
+                miSuper.agregarProductoLacteoChango(miChango, opcCodigoProductRecib);
                 break;
+            case OPC_AGREGAR_PRODC_CARNE:
+                miSuper.mostrarProductosCarne();
+                System.out.println("\n\t***Ingrese el codigo del producto que desea agregar");
+                opcCodigoProductRecib = opcProductoCodigo.nextInt();
+                miSuper.agregarProductoCarneChango(miChango, opcCodigoProductRecib);
+                break;
+            case OPC_AGREGAR_PRODC_ENLAT:
+                miSuper.mostrarProductosEnlatado();
+                System.out.println("\n\t***Ingrese el codigo del producto que desea agregar");
+                opcCodigoProductRecib = opcProductoCodigo.nextInt();
+                miSuper.agregarProductoEnlatadoChango(miChango, opcCodigoProductRecib);
+                break;
+            case OPC_AGREGAR_PRODC_LIMPIEZA:
+                miSuper.mostrarProductosLimpieza();
+                System.out.println("\n\t***Ingrese el codigo del producto que desea agregar");
+                opcCodigoProductRecib = opcProductoCodigo.nextInt();
+                miSuper.agregarProductoLimpiezaChango(miChango, opcCodigoProductRecib);
+                break;
+            case MOSTRAR_PRODUC_CHANGO:
+                miChango.mostrarCompras();
+                break;
+            case OPC_CAJA:
+                miSuper.atenderCliente(miChango);
+                break;
+            default:
+                System.out.println("Ingreso no aceptado");
         }
     }
     

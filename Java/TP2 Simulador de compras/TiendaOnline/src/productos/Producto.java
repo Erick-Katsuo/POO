@@ -45,7 +45,6 @@ public abstract class Producto {
         this.unidad = unidad;
         
         cantProductos++;
-        codigoProducto = cantProductos;
     }
     
     public String getTipoProducto(){
