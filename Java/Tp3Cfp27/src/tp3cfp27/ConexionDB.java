@@ -25,29 +25,45 @@ public class ConexionDB {
     private static final String USUARIO = "root";
     private static final String CONTRASENIA = "123";
     
-    private Connection conexionDB;//null
+    private Estudiante estudianteVerificado;
+    
+    private Connection conexionObtenida;//null caso contrario mantiene la conexion a la base de datos
     
     public ConexionDB(){        
         try {
-            conexionDB = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
+            conexionObtenida = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
             System.out.println("Logro conectarse a la base de datos "+ BASE_DATO);
         } catch (SQLException ex) {
             System.out.println("No logro conectarse a la base de datos "+ BASE_DATO + "\n"+ex);
         }
     }
     
-    public boolean verificarUsuarioRegistrado(){
+    /**
+     * Verifica el usuario requerido.
+     * Comprueba si existe el usuario y si la contrasenia coincide con el usuario encontrado en la base de datos
+     * 
+     * @param usuario nombre de usuario a buscar en la base de datos
+     * @param contrasenia a verificar con el usuario encontrado en la base de datos
+     * 
+     * @return true en caso de que el usuario exista y la contrasenia coincida con el registro encontrado en la base de datos, false caso contrario
+     */
+    public boolean verificarUsuarioRegistrado(String usuario, String contrasenia){
+        System.out.println("verificando usuario");
         boolean resultado = false;
         try {
-            PreparedStatement pstm = conexionDB.prepareStatement("SELECT * FROM estudiantes WHERE nombre = 'asdasd'");
-            ResultSet rs = pstm.executeQuery();
-            if(rs.next()){
-                System.out.println("Nombre de usuario " +rs.getString("nombre") );
-                System.out.println("Email de usuario " +rs.getString("email") );
-                System.out.println("Comentario de usuario " +rs.getString("comentario") );
+            PreparedStatement pstm = 
+                    conexionObtenida.prepareStatement("SELECT * FROM estudiantes WHERE nombre = ?");// preparamos el comando en lenguaje sql
+            pstm.setString(1, usuario);// reemplazar el '?' por el valor de "usuario"
+            System.out.println(pstm);// vamos a ver que comando se esta ejecutando en sql
+            
+            ResultSet rs = pstm.executeQuery();// contener el resultado del comanddo ejecutado
+            if(rs.next() && contrasenia.equals(rs.getString("contrasenia"))){// verifica que haya informacion para "leer" y en caso positivo procede a apuntar al primer registro de la tabla
+                estudianteVerificado = new Estudiante(
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("Comentario"),
+                        new int[]{rs.getInt("nota_mod_uno"), rs.getInt("nota_mod_dos"), rs.getInt("nota_mod_tres")});
                 resultado = true;
-            }else{
-                System.out.println("No existe");
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -55,4 +71,10 @@ public class ConexionDB {
         
         return resultado;
     }
+
+    public Estudiante getEstudianteVerificado() {
+        return estudianteVerificado;
+    }
+    
+    
 }

@@ -6,6 +6,7 @@
 package tp3cfp27;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 
 /**
@@ -20,16 +21,31 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     private static final String DEF_CONTRASENIA = "def contraseña";
     private static final String DEF_USUARIO = "Usuario";
 
+    private static final String DEF_USUARIO_VACIO = "";
+    private static final String DEF_CONTRASENIA_VACIO = "";
+    
+    private static final boolean CONFIG_TAM_DEF_APP = false;
+    
+    private static final boolean MSJ_VISIBILIIDAD_DEF_ERROR = false;
+    private static final boolean MSJ_ERROR_NO_GENERADO = false;
+    private static final boolean MSJ_ERROR_GENERADO = true;
+    
+    private static final Component POSICION_CENTRO_DEF = null;
+
     private CardLayout controladorVentanas;
+
+    private ConexionDB conexionCfp27;
+
+    private int cantidadIntentos;
 
     /**
      * Creates new form AplicacionCFP27
      */
     public AplicacionCFP27() {
         initComponents();
-        
-        ConexionDB conexionCfp27 = new ConexionDB();
-        
+
+        conexionCfp27 = new ConexionDB();
+
         jPasswordFieldContrasenia.setText(DEF_CONTRASENIA);
         jTextFieldUsuario.setText(DEF_USUARIO);
 
@@ -41,9 +57,9 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
         configuracionPanelPrincipal(PANEL_INGRESO, jPanelIngreso.getPreferredSize());
 
-        this.setResizable(false);//evita que la ventana se pueda modificar de tamaño
-        
-        conexionCfp27.verificarUsuarioRegistrado();
+        this.setResizable(CONFIG_TAM_DEF_APP);//evita que la ventana se pueda modificar de tamaño
+
+        jLabelErrorIngreso.setVisible(MSJ_VISIBILIIDAD_DEF_ERROR);//al inicar la aplicacion este componente no sera visible
     }
 
     /**
@@ -59,9 +75,12 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jButtonIngresar = new javax.swing.JButton();
         jTextFieldUsuario = new javax.swing.JTextField();
         jPasswordFieldContrasenia = new javax.swing.JPasswordField();
+        jLabelErrorIngreso = new javax.swing.JLabel();
         jPanelUsuario = new javax.swing.JPanel();
-        jLabelNombreUsuario = new javax.swing.JLabel();
         jButtonCerrarSesion = new javax.swing.JButton();
+        jTextFieldEmail = new javax.swing.JTextField();
+        jTextFieldNombre = new javax.swing.JTextField();
+        jTextFieldPromedio = new javax.swing.JTextField();
         jPanelPrincipal = new javax.swing.JPanel();
 
         jButtonIngresar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -82,11 +101,6 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                 jTextFieldUsuarioFocusLost(evt);
             }
         });
-        jTextFieldUsuario.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTextFieldUsuarioMouseClicked(evt);
-            }
-        });
 
         jPasswordFieldContrasenia.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jPasswordFieldContrasenia.setText("como estan ? ");
@@ -98,6 +112,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                 jPasswordFieldContraseniaFocusLost(evt);
             }
         });
+
+        jLabelErrorIngreso.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabelErrorIngreso.setForeground(new java.awt.Color(255, 51, 102));
+        jLabelErrorIngreso.setText("Error, usuario y/o contraseña incorrectos");
 
         javax.swing.GroupLayout jPanelIngresoLayout = new javax.swing.GroupLayout(jPanelIngreso);
         jPanelIngreso.setLayout(jPanelIngresoLayout);
@@ -113,6 +131,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                     .addComponent(jPasswordFieldContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(83, 83, 83))
+            .addGroup(jPanelIngresoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelErrorIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelIngresoLayout.setVerticalGroup(
             jPanelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,11 +145,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                 .addComponent(jPasswordFieldContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(41, 41, 41)
                 .addComponent(jButtonIngresar)
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addComponent(jLabelErrorIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
         );
-
-        jLabelNombreUsuario.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jLabelNombreUsuario.setText("PANEL USUARIO");
 
         jButtonCerrarSesion.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jButtonCerrarSesion.setText("Cerrar sesion");
@@ -137,28 +158,50 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
             }
         });
 
+        jTextFieldEmail.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextFieldEmail.setText("Email");
+
+        jTextFieldNombre.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextFieldNombre.setText("Nombre");
+
+        jTextFieldPromedio.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextFieldPromedio.setText("Promedio: -");
+
         javax.swing.GroupLayout jPanelUsuarioLayout = new javax.swing.GroupLayout(jPanelUsuario);
         jPanelUsuario.setLayout(jPanelUsuarioLayout);
         jPanelUsuarioLayout.setHorizontalGroup(
             jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelUsuarioLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonCerrarSesion)
+                .addGap(24, 24, 24))
             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
                 .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                        .addGap(280, 280, 280)
-                        .addComponent(jLabelNombreUsuario))
-                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                        .addGap(312, 312, 312)
-                        .addComponent(jButtonCerrarSesion)))
-                .addContainerGap(330, Short.MAX_VALUE))
+                    .addComponent(jTextFieldPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(524, Short.MAX_VALUE))
+            .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                    .addGap(39, 39, 39)
+                    .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(620, Short.MAX_VALUE)))
         );
         jPanelUsuarioLayout.setVerticalGroup(
             jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(jLabelNombreUsuario)
-                .addGap(91, 91, 91)
+                .addGap(114, 114, 114)
+                .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jTextFieldPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
                 .addComponent(jButtonCerrarSesion)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                    .addGap(65, 65, 65)
+                    .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(330, Short.MAX_VALUE)))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -189,54 +232,54 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonIngresarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonIngresarMouseClicked
-        System.out.println("click");
-        System.out.println("Nombre del usuario ingresado: " + jTextFieldUsuario.getText()
-                + " - Contraseña: " + new String(jPasswordFieldContrasenia.getPassword()));
-
-        if (jTextFieldUsuario.getText().equals("Erick") && (new String(jPasswordFieldContrasenia.getPassword()).equals("123"))) {
-            System.out.println("Si es un usuario registrado");
+       if (conexionCfp27.verificarUsuarioRegistrado(jTextFieldUsuario.getText(),
+                new String(jPasswordFieldContrasenia.getPassword()))) {
             jTextFieldUsuario.setText(DEF_USUARIO);//cambiar el texto del campo de usuario a "Usuario"
             jPasswordFieldContrasenia.setText(DEF_CONTRASENIA);//cambiar el texto de campo de contraseña a "def contraseña"
             configuracionPanelPrincipal(PANEL_USUARIO, jPanelUsuario.getPreferredSize());//cambio al panel de usuario
-        }else{
-            System.out.println("no es un usuario registrado");
+            jLabelErrorIngreso.setVisible(MSJ_ERROR_NO_GENERADO);//oculto el mensaje del error una vez que el usuario logro ingresar
+            
+            Estudiante auxEstudiante = conexionCfp27.getEstudianteVerificado();//guardo info del estudiante verificado en auxEstudiante
+                                                                               // para no acceder todo el tiempo con conexionCfp27
+            jTextFieldNombre.setText(auxEstudiante.getNombre());       
+            jTextFieldEmail.setText(auxEstudiante.getEmail());
+            
+            float promedio = 0;            
+            for(int nota : auxEstudiante.getNotas()){                
+                promedio += nota;
+            }
+            jTextFieldPromedio.setText("Promedio: "+ promedio/Estudiante.MAX_NOTAS);
+            
+        } else {
+            jLabelErrorIngreso.setVisible(MSJ_ERROR_GENERADO);//codigo para que se muestre el mensaje del error
         }
     }//GEN-LAST:event_jButtonIngresarMouseClicked
 
     private void jButtonCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCerrarSesionMouseClicked
-        System.out.println("click");
         configuracionPanelPrincipal(PANEL_INGRESO, jPanelIngreso.getPreferredSize());//cambio al panel de ingreso
     }//GEN-LAST:event_jButtonCerrarSesionMouseClicked
 
-    private void jTextFieldUsuarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioMouseClicked
-        System.out.println("click campo usuario");
-
-
-    }//GEN-LAST:event_jTextFieldUsuarioMouseClicked
-
     private void jTextFieldUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioFocusGained
         // TODO add your handling code here:
-        System.out.println("centrando el campo de texto para usuario");
         if (jTextFieldUsuario.getText().equals(DEF_USUARIO)) {
-            jTextFieldUsuario.setText("");
+            jTextFieldUsuario.setText(DEF_USUARIO_VACIO);
         }
     }//GEN-LAST:event_jTextFieldUsuarioFocusGained
 
     private void jTextFieldUsuarioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioFocusLost
-        System.out.println("saliendo del campo de texto para usuario");
-        if (jTextFieldUsuario.getText().equals("")) {
+        if (jTextFieldUsuario.getText().equals(DEF_USUARIO_VACIO)) {
             jTextFieldUsuario.setText(DEF_USUARIO);
         }
     }//GEN-LAST:event_jTextFieldUsuarioFocusLost
 
     private void jPasswordFieldContraseniaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordFieldContraseniaFocusGained
         if (new String(jPasswordFieldContrasenia.getPassword()).equals(DEF_CONTRASENIA)) {
-            jPasswordFieldContrasenia.setText("");
+            jPasswordFieldContrasenia.setText(DEF_CONTRASENIA_VACIO);
         }
     }//GEN-LAST:event_jPasswordFieldContraseniaFocusGained
 
     private void jPasswordFieldContraseniaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordFieldContraseniaFocusLost
-        if (new String(jPasswordFieldContrasenia.getPassword()).equals("")) {
+        if (new String(jPasswordFieldContrasenia.getPassword()).equals(DEF_CONTRASENIA_VACIO)) {
             jPasswordFieldContrasenia.setText(DEF_CONTRASENIA);
         }
     }//GEN-LAST:event_jPasswordFieldContraseniaFocusLost
@@ -252,7 +295,7 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         controladorVentanas.show(jPanelPrincipal, nombrePanel);
         jPanelPrincipal.setPreferredSize(tamanioPanel);
         this.pack();//asigna el tamaño de ventana correspondiente al panel asignado
-        this.setLocationRelativeTo(null);//inicializa la ventana en el centro de la pantalla
+        this.setLocationRelativeTo(POSICION_CENTRO_DEF);//inicializa la ventana en el centro de la pantalla
     }
 
     /**
@@ -293,11 +336,14 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCerrarSesion;
     private javax.swing.JButton jButtonIngresar;
-    private javax.swing.JLabel jLabelNombreUsuario;
+    private javax.swing.JLabel jLabelErrorIngreso;
     private javax.swing.JPanel jPanelIngreso;
     private javax.swing.JPanel jPanelPrincipal;
     private javax.swing.JPanel jPanelUsuario;
     private javax.swing.JPasswordField jPasswordFieldContrasenia;
+    private javax.swing.JTextField jTextFieldEmail;
+    private javax.swing.JTextField jTextFieldNombre;
+    private javax.swing.JTextField jTextFieldPromedio;
     private javax.swing.JTextField jTextFieldUsuario;
     // End of variables declaration//GEN-END:variables
 }
