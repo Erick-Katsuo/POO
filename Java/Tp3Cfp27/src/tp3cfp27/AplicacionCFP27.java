@@ -15,6 +15,9 @@ import java.awt.Dimension;
  */
 public class AplicacionCFP27 extends javax.swing.JFrame {
 
+    private static final String NOMBRE_EDICION_DESACTIVADA = "Edicion";
+    private static final String NOMBRE_EDICION_ACTIVADA = "Desactivar";
+
     private static final String PANEL_USUARIO = "Panel usuario";
     private static final String PANEL_INGRESO = "Panel ingreso";
 
@@ -23,20 +26,28 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private static final String DEF_USUARIO_VACIO = "";
     private static final String DEF_CONTRASENIA_VACIO = "";
-    
+
     private static final boolean CONFIG_TAM_DEF_APP = false;
-    
+
     private static final boolean MSJ_VISIBILIIDAD_DEF_ERROR = false;
     private static final boolean MSJ_ERROR_NO_GENERADO = false;
     private static final boolean MSJ_ERROR_GENERADO = true;
+
+    private static final boolean INFO_NO_EDITABLE = false;
+    private static final boolean INFO_EDITABLE = true;
     
+    private static final boolean BOTON_EDICION_DESACTIVADO = false;
+
     private static final Component POSICION_CENTRO_DEF = null;
 
     private CardLayout controladorVentanas;
 
     private ConexionDB conexionCfp27;
 
-    private int cantidadIntentos;
+    private static final boolean EDICION_ACTIVADA = true;
+    private static final boolean EDICION_DESACTIVADA = false;
+
+    private boolean estadoEdicionInfoUsuario = EDICION_DESACTIVADA;
 
     /**
      * Creates new form AplicacionCFP27
@@ -60,6 +71,26 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         this.setResizable(CONFIG_TAM_DEF_APP);//evita que la ventana se pueda modificar de tamaño
 
         jLabelErrorIngreso.setVisible(MSJ_VISIBILIIDAD_DEF_ERROR);//al inicar la aplicacion este componente no sera visible
+
+        jTextFieldValorPromedio.setEditable(INFO_NO_EDITABLE);
+        jTextFieldValorPromedio.setFocusable(INFO_NO_EDITABLE);
+        configuracionInfoUsuario(INFO_NO_EDITABLE);//inicia el valor de los estados en los campos de info usuario en falso (no editable)
+
+    }
+
+    /**
+     * Modificar el estado de edicion y enfoque de los componentes. Dependiendo del
+     * valor de "editable" lo campos podran o no ser editados y enfocados
+     *
+     * @param editable contiene el valor del estado de edicion y enfoque de los
+     * campos
+     */
+    private void configuracionInfoUsuario(boolean editable) {
+        jTextFieldNombre.setEditable(editable);
+        jTextFieldNombre.setFocusable(editable);
+
+        jTextFieldEmail.setEditable(editable);
+        jTextFieldEmail.setFocusable(editable);
     }
 
     /**
@@ -80,7 +111,11 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jButtonCerrarSesion = new javax.swing.JButton();
         jTextFieldEmail = new javax.swing.JTextField();
         jTextFieldNombre = new javax.swing.JTextField();
-        jTextFieldPromedio = new javax.swing.JTextField();
+        jTextFieldValorPromedio = new javax.swing.JTextField();
+        jLabelPromedio = new javax.swing.JLabel();
+        jToggleButtonEdicion = new javax.swing.JToggleButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaComentario = new javax.swing.JTextArea();
         jPanelPrincipal = new javax.swing.JPanel();
 
         jButtonIngresar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -164,8 +199,24 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jTextFieldNombre.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jTextFieldNombre.setText("Nombre");
 
-        jTextFieldPromedio.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextFieldPromedio.setText("Promedio: -");
+        jTextFieldValorPromedio.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextFieldValorPromedio.setText("-");
+
+        jLabelPromedio.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jLabelPromedio.setText("Promedio:");
+
+        jToggleButtonEdicion.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jToggleButtonEdicion.setText("Editar");
+        jToggleButtonEdicion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButtonEdicionActionPerformed(evt);
+            }
+        });
+
+        jTextAreaComentario.setColumns(20);
+        jTextAreaComentario.setLineWrap(true);
+        jTextAreaComentario.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaComentario);
 
         javax.swing.GroupLayout jPanelUsuarioLayout = new javax.swing.GroupLayout(jPanelUsuario);
         jPanelUsuario.setLayout(jPanelUsuarioLayout);
@@ -176,11 +227,21 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                 .addComponent(jButtonCerrarSesion)
                 .addGap(24, 24, 24))
             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
                 .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(524, Short.MAX_VALUE))
+                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelUsuarioLayout.createSequentialGroup()
+                                .addComponent(jLabelPromedio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldValorPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(jToggleButtonEdicion)))
+                .addGap(73, 73, 73)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(103, Short.MAX_VALUE))
             .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelUsuarioLayout.createSequentialGroup()
                     .addGap(39, 39, 39)
@@ -190,11 +251,20 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jPanelUsuarioLayout.setVerticalGroup(
             jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextFieldPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
+                .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                        .addGap(114, 114, 114)
+                        .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldValorPromedio))
+                        .addGap(39, 39, 39)
+                        .addComponent(jToggleButtonEdicion))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelUsuarioLayout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
                 .addComponent(jButtonCerrarSesion)
                 .addContainerGap())
             .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,24 +302,26 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonIngresarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonIngresarMouseClicked
-       if (conexionCfp27.verificarUsuarioRegistrado(jTextFieldUsuario.getText(),
+        if (conexionCfp27.verificarUsuarioRegistrado(jTextFieldUsuario.getText(),
                 new String(jPasswordFieldContrasenia.getPassword()))) {
             jTextFieldUsuario.setText(DEF_USUARIO);//cambiar el texto del campo de usuario a "Usuario"
             jPasswordFieldContrasenia.setText(DEF_CONTRASENIA);//cambiar el texto de campo de contraseña a "def contraseña"
             configuracionPanelPrincipal(PANEL_USUARIO, jPanelUsuario.getPreferredSize());//cambio al panel de usuario
             jLabelErrorIngreso.setVisible(MSJ_ERROR_NO_GENERADO);//oculto el mensaje del error una vez que el usuario logro ingresar
-            
+
             Estudiante auxEstudiante = conexionCfp27.getEstudianteVerificado();//guardo info del estudiante verificado en auxEstudiante
-                                                                               // para no acceder todo el tiempo con conexionCfp27
-            jTextFieldNombre.setText(auxEstudiante.getNombre());       
+            // para no acceder todo el tiempo con conexionCfp27
+            jTextFieldNombre.setText(auxEstudiante.getNombre());
             jTextFieldEmail.setText(auxEstudiante.getEmail());
-            
-            float promedio = 0;            
-            for(int nota : auxEstudiante.getNotas()){                
-                promedio += nota;
+            jTextAreaComentario.setText(auxEstudiante.getComentario());
+            float promedio = 0;
+
+            for (int nota : auxEstudiante.getNotas()) {//sumo todas las notas en la variable "promedio"  
+                promedio += nota;//suma el valor actual de "promedio" con el valor actual de "nota"
             }
-            jTextFieldPromedio.setText("Promedio: "+ promedio/Estudiante.MAX_NOTAS);
-            
+
+            jTextFieldValorPromedio.setText(Float.toString(promedio / Estudiante.MAX_NOTAS));
+
         } else {
             jLabelErrorIngreso.setVisible(MSJ_ERROR_GENERADO);//codigo para que se muestre el mensaje del error
         }
@@ -257,6 +329,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private void jButtonCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCerrarSesionMouseClicked
         configuracionPanelPrincipal(PANEL_INGRESO, jPanelIngreso.getPreferredSize());//cambio al panel de ingreso
+        configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
+        if (jToggleButtonEdicion.isSelected()) { // verifica si el toggle button esta activado
+            jToggleButtonEdicion.setSelected(BOTON_EDICION_DESACTIVADO);// simula el click para settear el toggle button como desactivado
+        }
     }//GEN-LAST:event_jButtonCerrarSesionMouseClicked
 
     private void jTextFieldUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioFocusGained
@@ -283,6 +359,23 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
             jPasswordFieldContrasenia.setText(DEF_CONTRASENIA);
         }
     }//GEN-LAST:event_jPasswordFieldContraseniaFocusLost
+
+    private void jToggleButtonEdicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonEdicionActionPerformed
+        if (!estadoEdicionInfoUsuario) {
+            configuracionEstadoEdicionInfoUsuario(INFO_EDITABLE, NOMBRE_EDICION_ACTIVADA, EDICION_ACTIVADA);
+        } else {
+            configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
+        }
+    }//GEN-LAST:event_jToggleButtonEdicionActionPerformed
+    
+    /**
+     * Configura el estado de los componentes para la info del usuario.
+     */        
+    private void configuracionEstadoEdicionInfoUsuario(boolean infoUsuarioEditable, String nombreBoton, boolean estadoEdicion) {
+        configuracionInfoUsuario(infoUsuarioEditable);
+        jToggleButtonEdicion.setText(nombreBoton);
+        estadoEdicionInfoUsuario = estadoEdicion;
+    }
 
     /**
      * Configura el panel principal. Modifica el tamanio al panel a mostrar y la
@@ -337,13 +430,17 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCerrarSesion;
     private javax.swing.JButton jButtonIngresar;
     private javax.swing.JLabel jLabelErrorIngreso;
+    private javax.swing.JLabel jLabelPromedio;
     private javax.swing.JPanel jPanelIngreso;
     private javax.swing.JPanel jPanelPrincipal;
     private javax.swing.JPanel jPanelUsuario;
     private javax.swing.JPasswordField jPasswordFieldContrasenia;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextAreaComentario;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldNombre;
-    private javax.swing.JTextField jTextFieldPromedio;
     private javax.swing.JTextField jTextFieldUsuario;
+    private javax.swing.JTextField jTextFieldValorPromedio;
+    private javax.swing.JToggleButton jToggleButtonEdicion;
     // End of variables declaration//GEN-END:variables
 }

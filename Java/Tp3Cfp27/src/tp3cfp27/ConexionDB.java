@@ -48,7 +48,6 @@ public class ConexionDB {
      * @return true en caso de que el usuario exista y la contrasenia coincida con el registro encontrado en la base de datos, false caso contrario
      */
     public boolean verificarUsuarioRegistrado(String usuario, String contrasenia){
-        System.out.println("verificando usuario");
         boolean resultado = false;
         try {
             PreparedStatement pstm = 
