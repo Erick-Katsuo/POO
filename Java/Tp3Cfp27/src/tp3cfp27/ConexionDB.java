@@ -70,6 +70,23 @@ public class ConexionDB {
         
         return resultado;
     }
+    
+    public void actualizarInformacionEstudiante(Estudiante estudianteInfoNueva){
+        PreparedStatement pstm;
+        try{
+            pstm = conexionObtenida.prepareStatement("UPDATE estudiantes SET nombre = ?, email = ?, comentario = ? WHERE nombre = ?");
+            pstm.setString(1, estudianteInfoNueva.getNombre());
+            pstm.setString(2, estudianteInfoNueva.getEmail());
+            pstm.setString(3, estudianteInfoNueva.getComentario());
+            pstm.setString(4, estudianteVerificado.getNombre());
+            
+            pstm.executeUpdate();
+            
+            estudianteVerificado = estudianteInfoNueva;
+        }catch(SQLException ex){
+            System.out.println("Ocurrio algo mal al actualizar\n" + ex);
+        }
+    }
 
     public Estudiante getEstudianteVerificado() {
         return estudianteVerificado;

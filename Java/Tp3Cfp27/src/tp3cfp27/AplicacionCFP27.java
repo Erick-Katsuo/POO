@@ -18,6 +18,9 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     private static final String NOMBRE_EDICION_DESACTIVADA = "Edicion";
     private static final String NOMBRE_EDICION_ACTIVADA = "Desactivar";
 
+    private static final int MAX_CARACTERES_COMENTARIO = 500;
+    private static final String SEPARADOR_CONTADOR_CARACTERES = "/";
+
     private static final String PANEL_USUARIO = "Panel usuario";
     private static final String PANEL_INGRESO = "Panel ingreso";
 
@@ -35,7 +38,7 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private static final boolean INFO_NO_EDITABLE = false;
     private static final boolean INFO_EDITABLE = true;
-    
+
     private static final boolean BOTON_EDICION_DESACTIVADO = false;
 
     private static final Component POSICION_CENTRO_DEF = null;
@@ -46,6 +49,9 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private static final boolean EDICION_ACTIVADA = true;
     private static final boolean EDICION_DESACTIVADA = false;
+    
+    private static final boolean ACTUALIZACION_ACTIVADA = true;
+    private static final boolean ACTUALIZACION_DESACTIVADA = false;
 
     private boolean estadoEdicionInfoUsuario = EDICION_DESACTIVADA;
 
@@ -76,11 +82,12 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jTextFieldValorPromedio.setFocusable(INFO_NO_EDITABLE);
         configuracionInfoUsuario(INFO_NO_EDITABLE);//inicia el valor de los estados en los campos de info usuario en falso (no editable)
 
+        jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);//inicialmente el boton actualizar no estara disponible
     }
 
     /**
-     * Modificar el estado de edicion y enfoque de los componentes. Dependiendo del
-     * valor de "editable" lo campos podran o no ser editados y enfocados
+     * Modificar el estado de edicion y enfoque de los componentes. Dependiendo
+     * del valor de "editable" lo campos podran o no ser editados y enfocados
      *
      * @param editable contiene el valor del estado de edicion y enfoque de los
      * campos
@@ -91,6 +98,9 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
         jTextFieldEmail.setEditable(editable);
         jTextFieldEmail.setFocusable(editable);
+
+        jTextAreaComentario.setEditable(editable);
+        jTextAreaComentario.setFocusable(editable);
     }
 
     /**
@@ -114,8 +124,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jTextFieldValorPromedio = new javax.swing.JTextField();
         jLabelPromedio = new javax.swing.JLabel();
         jToggleButtonEdicion = new javax.swing.JToggleButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPaneComentario = new javax.swing.JScrollPane();
         jTextAreaComentario = new javax.swing.JTextArea();
+        jLabelCantidadCaracteres = new javax.swing.JLabel();
+        jButtonActualizarInfo = new javax.swing.JButton();
         jPanelPrincipal = new javax.swing.JPanel();
 
         jButtonIngresar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -216,7 +228,28 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jTextAreaComentario.setColumns(20);
         jTextAreaComentario.setLineWrap(true);
         jTextAreaComentario.setRows(5);
-        jScrollPane1.setViewportView(jTextAreaComentario);
+        jTextAreaComentario.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                jTextAreaComentarioCaretUpdate(evt);
+            }
+        });
+        jTextAreaComentario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextAreaComentarioKeyTyped(evt);
+            }
+        });
+        jScrollPaneComentario.setViewportView(jTextAreaComentario);
+
+        jLabelCantidadCaracteres.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jLabelCantidadCaracteres.setText("-/500");
+
+        jButtonActualizarInfo.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jButtonActualizarInfo.setText("Guardar");
+        jButtonActualizarInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonActualizarInfoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelUsuarioLayout = new javax.swing.GroupLayout(jPanelUsuario);
         jPanelUsuario.setLayout(jPanelUsuarioLayout);
@@ -229,19 +262,26 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
                 .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelUsuarioLayout.createSequentialGroup()
+                        .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                                .addGap(39, 39, 39)
                                 .addComponent(jLabelPromedio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldValorPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanelUsuarioLayout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(jToggleButtonEdicion)))
-                .addGap(73, 73, 73)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                                .addComponent(jTextFieldValorPromedio, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelUsuarioLayout.createSequentialGroup()
+                                .addGap(95, 95, 95)
+                                .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButtonActualizarInfo)
+                                    .addComponent(jToggleButtonEdicion))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelUsuarioLayout.createSequentialGroup()
+                        .addGap(0, 39, Short.MAX_VALUE)
+                        .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)))
+                .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelCantidadCaracteres)
+                    .addComponent(jScrollPaneComentario, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(41, 41, 41))
             .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelUsuarioLayout.createSequentialGroup()
                     .addGap(39, 39, 39)
@@ -263,8 +303,12 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                         .addComponent(jToggleButtonEdicion))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelUsuarioLayout.createSequentialGroup()
                         .addGap(64, 64, 64)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                        .addComponent(jScrollPaneComentario, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelCantidadCaracteres)
+                .addGap(12, 12, 12)
+                .addComponent(jButtonActualizarInfo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                 .addComponent(jButtonCerrarSesion)
                 .addContainerGap())
             .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -361,16 +405,63 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordFieldContraseniaFocusLost
 
     private void jToggleButtonEdicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonEdicionActionPerformed
-        if (!estadoEdicionInfoUsuario) {
+        if (!estadoEdicionInfoUsuario) {// si la edicion esta desactivada entonces la activa
             configuracionEstadoEdicionInfoUsuario(INFO_EDITABLE, NOMBRE_EDICION_ACTIVADA, EDICION_ACTIVADA);
+            jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);
         } else {
             configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
+            if(!duplicidadInfo()){
+                jButtonActualizarInfo.setEnabled(ACTUALIZACION_ACTIVADA);
+                System.out.println("no existe duplicidad de informacion, edicion activada");
+            }
         }
     }//GEN-LAST:event_jToggleButtonEdicionActionPerformed
+
+    private boolean duplicidadInfo(){
+        boolean iguales = false;// valor incial para el resultado de "iguales"
+        Estudiante auxEstudiante = conexionCfp27.getEstudianteVerificado();
+        
+        if(auxEstudiante.getNombre().equals(jTextFieldNombre.getText()) &&
+                auxEstudiante.getEmail().equals(jTextFieldEmail.getText()) &&
+                auxEstudiante.getComentario().equals(jTextAreaComentario.getText())){
+            System.out.println("la informacion no cambio");
+            iguales = true;
+        }        
+        return iguales;
+    }
     
+    
+    private void jTextAreaComentarioCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextAreaComentarioCaretUpdate
+        System.out.println("Tamanio del vector/texto " + jTextAreaComentario.getText().length());
+        jLabelCantidadCaracteres.setText(jTextAreaComentario.getText().length() + SEPARADOR_CONTADOR_CARACTERES + MAX_CARACTERES_COMENTARIO);
+    }//GEN-LAST:event_jTextAreaComentarioCaretUpdate
+
+    private void jTextAreaComentarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextAreaComentarioKeyTyped
+        System.out.println("presionamos un caracter");
+        if (jTextAreaComentario.getText().length() == MAX_CARACTERES_COMENTARIO) {
+            evt.consume();// cancelar el evento, evitamos que el caracter ingresado quede en el comentario
+            System.out.println("Llego al maximo de caracteres");
+        } else if (jTextAreaComentario.getText().length() > MAX_CARACTERES_COMENTARIO) {
+
+            //recorto el texto del comentario y lo guardo en el mismo
+            jTextAreaComentario.setText(jTextAreaComentario.getText().substring(0, MAX_CARACTERES_COMENTARIO));
+            System.out.println("Texto sobrepasa el maximo, recortando texto");
+        }
+    }//GEN-LAST:event_jTextAreaComentarioKeyTyped
+
+    private void jButtonActualizarInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActualizarInfoActionPerformed
+        System.out.println("boton actualizar");
+        Estudiante estudianteInfoNueva = new Estudiante(
+                jTextFieldNombre.getText(),
+                jTextFieldEmail.getText(),
+                jTextAreaComentario.getText());
+        conexionCfp27.actualizarInformacionEstudiante(estudianteInfoNueva);
+        jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);
+    }//GEN-LAST:event_jButtonActualizarInfoActionPerformed
+
     /**
      * Configura el estado de los componentes para la info del usuario.
-     */        
+     */
     private void configuracionEstadoEdicionInfoUsuario(boolean infoUsuarioEditable, String nombreBoton, boolean estadoEdicion) {
         configuracionInfoUsuario(infoUsuarioEditable);
         jToggleButtonEdicion.setText(nombreBoton);
@@ -427,15 +518,17 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonActualizarInfo;
     private javax.swing.JButton jButtonCerrarSesion;
     private javax.swing.JButton jButtonIngresar;
+    private javax.swing.JLabel jLabelCantidadCaracteres;
     private javax.swing.JLabel jLabelErrorIngreso;
     private javax.swing.JLabel jLabelPromedio;
     private javax.swing.JPanel jPanelIngreso;
     private javax.swing.JPanel jPanelPrincipal;
     private javax.swing.JPanel jPanelUsuario;
     private javax.swing.JPasswordField jPasswordFieldContrasenia;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneComentario;
     private javax.swing.JTextArea jTextAreaComentario;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldNombre;

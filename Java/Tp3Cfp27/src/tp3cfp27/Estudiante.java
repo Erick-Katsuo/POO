@@ -24,6 +24,12 @@ public class Estudiante {
         this.notas = notas;
     }
     
+    public Estudiante(String nombre, String email, String comentario){
+        this.nombre = nombre;
+        this.email = email;
+        this.comentario = comentario;
+    }
+    
     public String getNombre(){
         return nombre;
     }
