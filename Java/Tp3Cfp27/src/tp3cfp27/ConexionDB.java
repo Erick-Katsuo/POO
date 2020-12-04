@@ -29,6 +29,8 @@ public class ConexionDB {
     
     private Connection conexionObtenida;//null caso contrario mantiene la conexion a la base de datos
     
+    private Estudiante[] estudiantesRegistrados;
+    
     public ConexionDB(){        
         try {
             conexionObtenida = DriverManager.getConnection(URL, USUARIO, CONTRASENIA);
@@ -87,7 +89,38 @@ public class ConexionDB {
             System.out.println("Ocurrio algo mal al actualizar\n" + ex);
         }
     }
-
+    
+    public Estudiante[] obtenerInfoEstudiantes(){
+        try {
+            PreparedStatement pstm = conexionObtenida.prepareStatement("SELECT nombre, email, comentario, nota_mod_uno, nota_mod_dos, nota_mod_tres FROM estudiantes");
+            ResultSet rs = pstm.executeQuery();
+            
+            rs.last();//posiciona en la ultima fila
+            int totalRegistros = rs.getRow();//obtengo el numero de la ultima fila
+            estudiantesRegistrados = new Estudiante[totalRegistros];//instanciar el vector de estudiantes con el tamaño correspondiente
+            
+            rs.beforeFirst();//mover el cursor antes de la primer fila, como estaba al inicio
+              
+            for( int i = 0 ; i < totalRegistros ; i++){
+                rs.next();//comienza a leer
+                estudiantesRegistrados[i] = new Estudiante(
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("comentario"),
+                        new int[]{
+                            rs.getInt("nota_mod_uno"),
+                            rs.getInt("nota_mod_dos"),
+                            rs.getInt("nota_mod_tres"),
+                        });                        
+            }            
+        } catch (SQLException ex) {
+            System.out.println("Error al cargar el vector de estudiantes\n"+ ex);
+        }
+        
+        return estudiantesRegistrados;
+    }
+    
+    
     public Estudiante getEstudianteVerificado() {
         return estudianteVerificado;
     }

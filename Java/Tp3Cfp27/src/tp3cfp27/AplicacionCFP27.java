@@ -8,6 +8,9 @@ package tp3cfp27;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,6 +26,7 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private static final String PANEL_USUARIO = "Panel usuario";
     private static final String PANEL_INGRESO = "Panel ingreso";
+    private static final String PANEL_TABLA_ESTUDIANTES = "Panel tabla estudiantes";
 
     private static final String DEF_CONTRASENIA = "def contraseña";
     private static final String DEF_USUARIO = "Usuario";
@@ -40,6 +44,7 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     private static final boolean INFO_EDITABLE = true;
 
     private static final boolean BOTON_EDICION_DESACTIVADO = false;
+    private static final boolean BOTON_EDICION_ACTIVADA = true;
 
     private static final Component POSICION_CENTRO_DEF = null;
 
@@ -49,9 +54,6 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
 
     private static final boolean EDICION_ACTIVADA = true;
     private static final boolean EDICION_DESACTIVADA = false;
-    
-    private static final boolean ACTUALIZACION_ACTIVADA = true;
-    private static final boolean ACTUALIZACION_DESACTIVADA = false;
 
     private boolean estadoEdicionInfoUsuario = EDICION_DESACTIVADA;
 
@@ -69,8 +71,11 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         controladorVentanas = new CardLayout();
 
         jPanelPrincipal.setLayout(controladorVentanas);//asignado el contralor de ventanas al panel principal
-        jPanelPrincipal.add(jPanelIngreso, PANEL_INGRESO);//agrega el panel ingreso al panel principal para guardar
-        jPanelPrincipal.add(jPanelUsuario, PANEL_USUARIO);//agrega el panel usuario al panel principal para guardar
+        jPanelPrincipal.add(jPanelIngreso, PANEL_INGRESO);//agrega el panel ingreso al panel principal para contenerlo
+        jPanelPrincipal.add(jPanelUsuario, PANEL_USUARIO);//agrega el panel usuario al panel principal para contenerlo
+        
+        //agrega el panel de la tabla de estudiantes al panel principal para contenerlo
+        jPanelPrincipal.add(jPanelTablaEstudiantes, PANEL_TABLA_ESTUDIANTES);
 
         configuracionPanelPrincipal(PANEL_INGRESO, jPanelIngreso.getPreferredSize());
 
@@ -82,7 +87,15 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jTextFieldValorPromedio.setFocusable(INFO_NO_EDITABLE);
         configuracionInfoUsuario(INFO_NO_EDITABLE);//inicia el valor de los estados en los campos de info usuario en falso (no editable)
 
-        jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);//inicialmente el boton actualizar no estara disponible
+        //configuracionVentanaOpcion();
+    }
+
+    private int configuracionVentanaOpcionGuardar() {
+        ImageIcon icon = new ImageIcon("imagenes/icon.png");
+        
+        int opcionUsuario = jOptionPaneVentana.showConfirmDialog(this, "Desea realizar los cambios?",
+                "Confirmar edicion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
+        return opcionUsuario;
     }
 
     /**
@@ -127,7 +140,12 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jScrollPaneComentario = new javax.swing.JScrollPane();
         jTextAreaComentario = new javax.swing.JTextArea();
         jLabelCantidadCaracteres = new javax.swing.JLabel();
-        jButtonActualizarInfo = new javax.swing.JButton();
+        jButtonMostrarTabla = new javax.swing.JButton();
+        jOptionPaneVentana = new javax.swing.JOptionPane();
+        jPanelTablaEstudiantes = new javax.swing.JPanel();
+        jScrollPaneTablaEstudiantes = new javax.swing.JScrollPane();
+        jTableEstudiantes = new javax.swing.JTable();
+        jButtonVolverPanelUsuario = new javax.swing.JButton();
         jPanelPrincipal = new javax.swing.JPanel();
 
         jButtonIngresar.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -243,11 +261,10 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         jLabelCantidadCaracteres.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabelCantidadCaracteres.setText("-/500");
 
-        jButtonActualizarInfo.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        jButtonActualizarInfo.setText("Guardar");
-        jButtonActualizarInfo.addActionListener(new java.awt.event.ActionListener() {
+        jButtonMostrarTabla.setText("Ver compañeros");
+        jButtonMostrarTabla.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonActualizarInfoActionPerformed(evt);
+                jButtonMostrarTablaActionPerformed(evt);
             }
         });
 
@@ -271,7 +288,7 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                             .addGroup(jPanelUsuarioLayout.createSequentialGroup()
                                 .addGap(95, 95, 95)
                                 .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButtonActualizarInfo)
+                                    .addComponent(jButtonMostrarTabla)
                                     .addComponent(jToggleButtonEdicion))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelUsuarioLayout.createSequentialGroup()
@@ -306,9 +323,9 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                         .addComponent(jScrollPaneComentario, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelCantidadCaracteres)
-                .addGap(12, 12, 12)
-                .addComponent(jButtonActualizarInfo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(jButtonMostrarTabla)
+                .addGap(18, 18, 18)
                 .addComponent(jButtonCerrarSesion)
                 .addContainerGap())
             .addGroup(jPanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -316,6 +333,46 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
                     .addGap(65, 65, 65)
                     .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(330, Short.MAX_VALUE)))
+        );
+
+        jTableEstudiantes.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jTableEstudiantes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPaneTablaEstudiantes.setViewportView(jTableEstudiantes);
+
+        jButtonVolverPanelUsuario.setText("Atras");
+        jButtonVolverPanelUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVolverPanelUsuarioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelTablaEstudiantesLayout = new javax.swing.GroupLayout(jPanelTablaEstudiantes);
+        jPanelTablaEstudiantes.setLayout(jPanelTablaEstudiantesLayout);
+        jPanelTablaEstudiantesLayout.setHorizontalGroup(
+            jPanelTablaEstudiantesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPaneTablaEstudiantes, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+            .addGroup(jPanelTablaEstudiantesLayout.createSequentialGroup()
+                .addGap(379, 379, 379)
+                .addComponent(jButtonVolverPanelUsuario)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelTablaEstudiantesLayout.setVerticalGroup(
+            jPanelTablaEstudiantesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTablaEstudiantesLayout.createSequentialGroup()
+                .addComponent(jScrollPaneTablaEstudiantes, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addComponent(jButtonVolverPanelUsuario)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -405,32 +462,56 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordFieldContraseniaFocusLost
 
     private void jToggleButtonEdicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonEdicionActionPerformed
+        
         if (!estadoEdicionInfoUsuario) {// si la edicion esta desactivada entonces la activa
             configuracionEstadoEdicionInfoUsuario(INFO_EDITABLE, NOMBRE_EDICION_ACTIVADA, EDICION_ACTIVADA);
-            jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);
         } else {
-            configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
-            if(!duplicidadInfo()){
-                jButtonActualizarInfo.setEnabled(ACTUALIZACION_ACTIVADA);
-                System.out.println("no existe duplicidad de informacion, edicion activada");
+            if (!duplicidadInfo()) {
+                switch (configuracionVentanaOpcionGuardar()) {
+                    case JOptionPane.YES_OPTION:
+                        System.out.println("Si, guardar");
+                        configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
+                        comenzarActualizacionInfoUsuario();
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        System.out.println("No, descartar");
+                        configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
+                        descartarActualiacion();
+                        break;
+                    case JOptionPane.CLOSED_OPTION:
+                        System.out.println("Cerrar, seguir editando");
+                        jToggleButtonEdicion.setSelected(BOTON_EDICION_ACTIVADA);
+                        break;
+                    default:
+                        System.out.println("Opcion usuario no considerada");
+                }
+            } else {
+                configuracionEstadoEdicionInfoUsuario(INFO_NO_EDITABLE, NOMBRE_EDICION_DESACTIVADA, EDICION_DESACTIVADA);
             }
         }
     }//GEN-LAST:event_jToggleButtonEdicionActionPerformed
 
-    private boolean duplicidadInfo(){
-        boolean iguales = false;// valor incial para el resultado de "iguales"
+    private void descartarActualiacion(){
         Estudiante auxEstudiante = conexionCfp27.getEstudianteVerificado();
-        
-        if(auxEstudiante.getNombre().equals(jTextFieldNombre.getText()) &&
-                auxEstudiante.getEmail().equals(jTextFieldEmail.getText()) &&
-                auxEstudiante.getComentario().equals(jTextAreaComentario.getText())){
-            System.out.println("la informacion no cambio");
-            iguales = true;
-        }        
-        return iguales;
+        jTextFieldNombre.setText(auxEstudiante.getNombre());
+        jTextFieldEmail.setText(auxEstudiante.getEmail());
+        jTextAreaComentario.setText(auxEstudiante.getComentario());
     }
     
-    
+    private boolean duplicidadInfo() {
+        boolean iguales = false;// valor incial para el resultado de "iguales"
+        Estudiante auxEstudiante = conexionCfp27.getEstudianteVerificado();
+
+        if (auxEstudiante.getNombre().equals(jTextFieldNombre.getText())
+                && auxEstudiante.getEmail().equals(jTextFieldEmail.getText())
+                && auxEstudiante.getComentario().equals(jTextAreaComentario.getText())) {
+            System.out.println("la informacion no cambio");
+            iguales = true;
+        }
+        return iguales;
+    }
+
+
     private void jTextAreaComentarioCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextAreaComentarioCaretUpdate
         System.out.println("Tamanio del vector/texto " + jTextAreaComentario.getText().length());
         jLabelCantidadCaracteres.setText(jTextAreaComentario.getText().length() + SEPARADOR_CONTADOR_CARACTERES + MAX_CARACTERES_COMENTARIO);
@@ -449,16 +530,56 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTextAreaComentarioKeyTyped
 
-    private void jButtonActualizarInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonActualizarInfoActionPerformed
-        System.out.println("boton actualizar");
+    private void jButtonMostrarTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMostrarTablaActionPerformed
+        Estudiante[] auxEstudiantesRegistrados = conexionCfp27.obtenerInfoEstudiantes();
+        
+        //usar una tabla por defecto para modificar la tabla de estudiantes
+        DefaultTableModel tablaBase = (DefaultTableModel) jTableEstudiantes.getModel();
+        
+        tablaBase.setRowCount(0);//settear las filas en 0 (vacia las filas)
+        tablaBase.setColumnCount(0);//settear las columnas en 0 (vacia las columnas)
+        
+        tablaBase.addColumn("nombre");//agregamos una columna
+        tablaBase.addColumn("email");//agregamos una columna
+        tablaBase.addColumn("comentario");//agregamos una columna
+        tablaBase.addColumn("promedio");//agregamos una columna
+                        
+        //tablaBase.addRow(new String[]{"1","2","3"});//agregamos una fila entera
+        //tablaBase.addRow(new String[]{"4","5","6"});//agregamos una fila entera
+        float promedio = 0F;
+        for(Estudiante auxEstudiante : auxEstudiantesRegistrados){
+            for(int nota : auxEstudiante.getNotas()){
+                promedio += nota;//suma todas las notas
+            }
+            promedio /= Estudiante.MAX_NOTAS;//calcula el promedio "promedio = promedio/ Estudiiante.MAX_NOTAS"
+            
+            tablaBase.addRow(new String[]{
+                    auxEstudiante.getNombre(),
+                    auxEstudiante.getEmail(),
+                    auxEstudiante.getComentario(),
+                    Float.toString(promedio)
+                }
+            );            
+            promedio = 0F;
+        }
+        
+        //conexionCfp27.obtenerListadoEstudiantes();
+        //se encarga de mostrar el panel de la tabla de estudiantes
+        configuracionPanelPrincipal(PANEL_TABLA_ESTUDIANTES, jPanelTablaEstudiantes.getPreferredSize());
+    }//GEN-LAST:event_jButtonMostrarTablaActionPerformed
+
+    private void jButtonVolverPanelUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVolverPanelUsuarioActionPerformed
+        configuracionPanelPrincipal(PANEL_USUARIO, jPanelUsuario.getPreferredSize());
+    }//GEN-LAST:event_jButtonVolverPanelUsuarioActionPerformed
+
+    private void comenzarActualizacionInfoUsuario(){
         Estudiante estudianteInfoNueva = new Estudiante(
                 jTextFieldNombre.getText(),
                 jTextFieldEmail.getText(),
                 jTextAreaComentario.getText());
         conexionCfp27.actualizarInformacionEstudiante(estudianteInfoNueva);
-        jButtonActualizarInfo.setEnabled(ACTUALIZACION_DESACTIVADA);
-    }//GEN-LAST:event_jButtonActualizarInfoActionPerformed
-
+    }
+    
     /**
      * Configura el estado de los componentes para la info del usuario.
      */
@@ -482,6 +603,8 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
         this.setLocationRelativeTo(POSICION_CENTRO_DEF);//inicializa la ventana en el centro de la pantalla
     }
 
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -518,17 +641,22 @@ public class AplicacionCFP27 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonActualizarInfo;
     private javax.swing.JButton jButtonCerrarSesion;
     private javax.swing.JButton jButtonIngresar;
+    private javax.swing.JButton jButtonMostrarTabla;
+    private javax.swing.JButton jButtonVolverPanelUsuario;
     private javax.swing.JLabel jLabelCantidadCaracteres;
     private javax.swing.JLabel jLabelErrorIngreso;
     private javax.swing.JLabel jLabelPromedio;
+    private javax.swing.JOptionPane jOptionPaneVentana;
     private javax.swing.JPanel jPanelIngreso;
     private javax.swing.JPanel jPanelPrincipal;
+    private javax.swing.JPanel jPanelTablaEstudiantes;
     private javax.swing.JPanel jPanelUsuario;
     private javax.swing.JPasswordField jPasswordFieldContrasenia;
     private javax.swing.JScrollPane jScrollPaneComentario;
+    private javax.swing.JScrollPane jScrollPaneTablaEstudiantes;
+    private javax.swing.JTable jTableEstudiantes;
     private javax.swing.JTextArea jTextAreaComentario;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldNombre;
