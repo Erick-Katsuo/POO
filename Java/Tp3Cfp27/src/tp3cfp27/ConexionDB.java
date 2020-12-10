@@ -25,6 +25,9 @@ public class ConexionDB {
     private static final String USUARIO = "root";
     private static final String CONTRASENIA = "123";
     
+    private static final boolean FALLA_BAJA = false;
+    private static final boolean EXITO_BAJA = true;
+    
     private Estudiante estudianteVerificado;
     
     private Connection conexionObtenida;//null caso contrario mantiene la conexion a la base de datos
@@ -120,6 +123,54 @@ public class ConexionDB {
         return estudiantesRegistrados;
     }
     
+    public boolean bajaUsuario(String contrasenia){
+        boolean resultadoBaja = FALLA_BAJA;
+        
+        try {
+            PreparedStatement pstm = conexionObtenida.prepareStatement("SELECT contrasenia FROM estudiantes WHERE nombre = ?");
+            pstm.setString(1, estudianteVerificado.getNombre());
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next() && contrasenia.equals( rs.getString("contrasenia"))){
+                System.out.println("las contrasenias son iguales, dando de baja al usuario");
+                
+                pstm = conexionObtenida.prepareStatement("DELETE FROM estudiantes WHERE nombre = ?");
+                pstm.setString(1, estudianteVerificado.getNombre());
+                
+                pstm.executeUpdate();
+                
+                resultadoBaja = EXITO_BAJA;
+                
+                
+            }else{
+                System.out.println("contrasenia no coincide");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return resultadoBaja;
+    }
+    
+    public void registrarUsuario(String nombre, String email, String contrasenia){
+        try {
+            PreparedStatement pstm = conexionObtenida.prepareStatement("INSERT INTO estudiantes (nombre, contrasenia, email, comentario, nota_mod_uno, nota_mod_dos, nota_mod_tres ) VALUES (?,?,?, 'def comentario', 10,10,10)"); 
+            pstm.setString(1, nombre);
+            pstm.setString(2, contrasenia);
+            pstm.setString(3, email);            
+            pstm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    public void terminarConexion(){
+        try {
+            conexionObtenida.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     public Estudiante getEstudianteVerificado() {
         return estudianteVerificado;
